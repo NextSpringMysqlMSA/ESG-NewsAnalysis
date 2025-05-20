@@ -5,20 +5,22 @@ from transformers import pipeline
 import json
 
 class ModelKafka:
-    def __init__(self):
-        self.bootstrap_servers = '192.168.0.224:9092'
-        self.consume_topic = "news-results"  # 소비할 토픽
-        self.produce_topic = "output-topic"
-        self.translate_model = "facebook/nllb-200-distilled-600M"
+    def __init__(self, bootstrap_servers = '192.168.0.224:9092', 
+                 consume_topic = "news-results", produce_topic = "output-topic",
+                 translate_model = "facebook/nllb-200-distilled-600M",
+                 sentiment_model = "snunlp/KR-FinBert-SC", esg_model = "yiyanghkust/finbert-esg"):
+        self.bootstrap_servers = bootstrap_servers
+        self.consume_topic = consume_topic  # 소비할 토픽
+        self.produce_topic = produce_topic
+        self.translate_model = translate_model
         self.trans_tokenizer = AutoTokenizer.from_pretrained(self.translate_model)
         self.trans_model = AutoModelForSeq2SeqLM.from_pretrained(self.translate_model)
         self.src_lang = "kor_Kore"
         self.tgt_lang = "eng_Latn"
         self.sentiment = pipeline(
         "sentiment-analysis",
-        model="snunlp/KR-FinBert-SC",  # 또는 "nlpai-lab/kcbert-base-sentiment"
-        tokenizer="snunlp/KR-FinBert-SC",
-        device=0  # GPU 사용 가능 시
+        model = sentiment_model,  # 또는 "nlpai-lab/kcbert-base-sentiment"
+        tokenizer = sentiment_model, # GPU 사용 가능 시
         )
         # Consumer 설정
         self.consumer = KafkaConsumer(
@@ -37,7 +39,8 @@ class ModelKafka:
         )
         self.trans_model.src_lang = self.src_lang
         self.forced_bos_token_id=self.trans_tokenizer.convert_tokens_to_ids(f"<<{self.tgt_lang}>>")
-        self.esg = pipeline("text-classification", model="yiyanghkust/finbert-esg", tokenizer="yiyanghkust/finbert-esg", device=0)  # GPU 사용 가능 시
+        self.esg = pipeline("text-classification", model=esg_model, tokenizer=esg_model)  # GPU 사용 가능 
+        self.consume_messages()
     def consume_messages(self):
         for message in self.consumer:
             send_data = {}
@@ -79,4 +82,4 @@ class ModelKafka:
 
 if __name__ == "__main__":
     model_kafka = ModelKafka()
-    model_kafka.consume_messages()
+    
