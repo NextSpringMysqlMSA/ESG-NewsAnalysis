@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.vscode/
+.git/
+.gitignore
+*.md
+*.csv
+*.ipynb
+# 특정 파일을 제외하고 싶지 않다면 !를 사용합니다. 예: !README.md 

@@ -1,0 +1,5 @@
+kafka-python
+transformers
+torch
+sentencepiece
+# python-dotenv # .env 파일 사용 시 (현재 코드에서는 os.environ 직접 사용) 
