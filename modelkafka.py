@@ -3,6 +3,10 @@ import os
 import logging
 from kafka import KafkaConsumer, KafkaProducer
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
+import json
+import logging
+import os
+from datetime import datetime
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

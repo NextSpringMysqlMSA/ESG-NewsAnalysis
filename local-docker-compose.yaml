@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  esg-news-analyzer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: esg-news-analyzer
+    env_file:
+      - .env
+    networks:
+      - news-crawl-service_default
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+
+networks:
+  news-crawl-service_default:
+    external: true
